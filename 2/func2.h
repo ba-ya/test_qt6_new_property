@@ -18,13 +18,17 @@ public:
 
     enum RexType {
         NoFilter,
-        PureNum,
+        PureNum,// 纯数字
+        HascORf,// 含c/f温度单位
+
+        RexTypeCount,  // 最后一个枚举值 + 1
     };
 
 private slots:
     void on_comboBox_type_currentIndexChanged(int index);
-
     void on_btn_filter_released();
+
+    void on_curr_reg_returnPressed();
 
 private:
     void init();
@@ -32,7 +36,6 @@ private:
 
 private:
     Ui::func2 *ui;
-    QString filter;
     QRegularExpression regex;
 };
 

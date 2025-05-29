@@ -1,0 +1,1 @@
+# test_qt6_new_property

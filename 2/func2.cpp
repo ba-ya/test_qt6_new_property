@@ -54,10 +54,18 @@ void func2::on_comboBox_type_currentIndexChanged(int type)
     } else if (type == PureNum) {
         filter = "^[+-]?[0-9]+(\\.[0-9]*)?$";
     } else if (type == HascORf) {
-        filter = "^[+-]?[0-9]+(\\.[0-9]*)?\\s*[cf]$";
+        filter = "^[+-]?([0-9]+)(\\.[0-9]*)?\\s*[cf]$";
+    } else if (type == IgnoreBeginxx) {
+        /// (?!x), 不能包含x
+        ///  .*? , 非贪婪匹配：尽量少地匹配任意字符。
+        filter = "^(?!.*font-size).*?([0-9]+px)";
+    } else if (type == MustContainxx) {
+        /// (?=x), 必须包含x
+        filter = "(?=.*border)";
     }
     regex.setPattern(filter);
     ui->curr_reg->setText(filter);
+    on_btn_filter_released();
 }
 
 QString func2::to_str(int type)
@@ -68,6 +76,10 @@ QString func2::to_str(int type)
         return "PureNum";
     } else if (type == HascORf) {
         return "HascORf";
+    } else if (type == IgnoreBeginxx) {
+        return "IgnoreBeginxx";
+    } else if (type == MustContainxx) {
+        return "MustContainxx";
     }
     return "UnKnown";
 }
@@ -75,13 +87,23 @@ QString func2::to_str(int type)
 void func2::on_btn_filter_released()
 {
     qDebug() << "pattern" << regex.pattern();
+    ui->out_capture->clear();
+
     QString text = ui->input->toPlainText();
     QStringList lines = text.split("\n");
     QStringList matched_lines;
     for (auto &line : lines) {
         QRegularExpressionMatch match = regex.match(line.trimmed());
+        QStringList captured_lines;
         if (match.hasMatch()) {
+            auto cnt = regex.captureCount();// 不含group 0
+            // 如果没有捕获列表,match.captured(0)是空的
+            // 所有这里只能 << line, 不能match.captured(0)
             matched_lines << line;
+            for (int i = 0; i < cnt; ++i) {
+                captured_lines << match.captured(i + 1);
+            }
+            ui->out_capture->append("[" + captured_lines.join("] [") +"]");
         }
     }
     if (!matched_lines.isEmpty()) {

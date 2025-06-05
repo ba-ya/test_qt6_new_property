@@ -30,6 +30,8 @@ void func2::init()
             regex.setPatternOptions(QRegularExpression::NoPatternOption);
         }
     });
+
+    on_comboBox_type_currentIndexChanged(RexTypeCount - 1);
 }
 
 void func2::on_curr_reg_returnPressed()
@@ -48,6 +50,10 @@ void func2::on_curr_reg_returnPressed()
 
 void func2::on_comboBox_type_currentIndexChanged(int type)
 {
+    ui->comboBox_type->blockSignals(true);
+    ui->comboBox_type->setCurrentIndex(type);
+    ui->comboBox_type->blockSignals(false);
+
     QString filter;
     if (type == NoFilter) {
         filter = "";
@@ -55,13 +61,18 @@ void func2::on_comboBox_type_currentIndexChanged(int type)
         filter = "^[+-]?[0-9]+(\\.[0-9]*)?$";
     } else if (type == HascORf) {
         filter = "^[+-]?([0-9]+)(\\.[0-9]*)?\\s*[cf]$";
-    } else if (type == IgnoreBeginxx) {
+    }else if (type == IgnoreBeginxx) {
         /// (?!x), 不能包含x
         ///  .*? , 非贪婪匹配：尽量少地匹配任意字符。
         filter = "^(?!.*font-size).*?([0-9]+px)";
     } else if (type == MustContainxx) {
         /// (?=x), 必须包含x
         filter = "(?=.*border)";
+    } else if (type == Beginxx) {
+        /// MustContainxx和Beginxx几乎一致,区别就在于有没有脱字符
+        filter = "^border(.*)";
+    } else if (type == ExtractContent) {
+        filter = "^From:(\\S+) \\(([^()]*)\\)";
     }
     regex.setPattern(filter);
     ui->curr_reg->setText(filter);
@@ -76,10 +87,14 @@ QString func2::to_str(int type)
         return "PureNum";
     } else if (type == HascORf) {
         return "HascORf";
-    } else if (type == IgnoreBeginxx) {
+    }else if (type == IgnoreBeginxx) {
         return "IgnoreBeginxx";
     } else if (type == MustContainxx) {
         return "MustContainxx";
+    } else if (type == Beginxx) {
+        return "Beginxx";
+    } else if (type == ExtractContent) {
+        return "ExtractContent";
     }
     return "UnKnown";
 }

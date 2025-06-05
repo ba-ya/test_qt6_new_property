@@ -22,6 +22,8 @@ public:
         HascORf,// 含c/f温度单位
         IgnoreBeginxx,// 忽略以xx开始的
         MustContainxx,// 必须包含xx
+        Beginxx,// 以xx开始的
+        ExtractContent,
 
         RexTypeCount,  // 最后一个枚举值 + 1
     };

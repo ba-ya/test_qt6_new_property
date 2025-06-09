@@ -23,12 +23,11 @@ void func2::init()
     }
     ui->comboBox_type->addItems(names);
 
-    connect(ui->checkBox_case_insensi, &QCheckBox::checkStateChanged, this, [this](Qt::CheckState state){
-        if (state == Qt::CheckState::Checked) {
-            regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-        } else {
-            regex.setPatternOptions(QRegularExpression::NoPatternOption);
-        }
+    connect(ui->checkBox_case_insensi, &QCheckBox::checkStateChanged, this, [this](){
+        update_regex_option();
+    });
+    connect(ui->checkBox_ignore_space, &QCheckBox::checkStateChanged, this, [this](){
+        update_regex_option();
     });
 
     on_comboBox_type_currentIndexChanged(RexTypeCount - 1);
@@ -73,6 +72,9 @@ void func2::on_comboBox_type_currentIndexChanged(int type)
         filter = "^border(.*)";
     } else if (type == ExtractContent) {
         filter = "^From:(\\S+) \\(([^()]*)\\)";
+    } else if (type == ThousandsSeparator) {
+        /// Qt不能逆序查找
+        filter = "(\\d)(?=(\\d{3})+(?!\\d))";
     }
     regex.setPattern(filter);
     ui->curr_reg->setText(filter);
@@ -95,8 +97,22 @@ QString func2::to_str(int type)
         return "Beginxx";
     } else if (type == ExtractContent) {
         return "ExtractContent";
+    } else if (type == ThousandsSeparator) {
+        return "ThousandsSeparator";
     }
     return "UnKnown";
+}
+
+void func2::update_regex_option()
+{
+    QRegularExpression::PatternOptions flag = QRegularExpression::NoPatternOption;
+    if (ui->checkBox_case_insensi->isChecked()) {
+        flag |= QRegularExpression::PatternOption::CaseInsensitiveOption;
+    }
+    if (ui->checkBox_ignore_space->isChecked()) {
+        flag |= QRegularExpression::PatternOption::ExtendedPatternSyntaxOption;
+    }
+    regex.setPatternOptions(flag);
 }
 
 void func2::on_btn_filter_released()
@@ -108,6 +124,7 @@ void func2::on_btn_filter_released()
     QStringList lines = text.split("\n");
     QStringList matched_lines;
     for (auto &line : lines) {
+        // match返回的是第一次匹配到结果
         QRegularExpressionMatch match = regex.match(line.trimmed());
         QStringList captured_lines;
         if (match.hasMatch()) {
@@ -126,5 +143,12 @@ void func2::on_btn_filter_released()
     } else {
         ui->output->setText("false");
     }
+
+    ///ThousandsSeparator
+    // 迭代+替换
+    // 多次匹配+替换
+    QString num = "12345678901";
+    QString formatted = num.replace(regex, "\\1,");
+    qDebug() << formatted;
 }
 

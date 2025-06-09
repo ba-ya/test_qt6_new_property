@@ -24,6 +24,7 @@ public:
         MustContainxx,// 必须包含xx
         Beginxx,// 以xx开始的
         ExtractContent,
+        ThousandsSeparator, // 千位分隔符
 
         RexTypeCount,  // 最后一个枚举值 + 1
     };
@@ -36,6 +37,8 @@ private slots:
 private:
     void init();
     QString to_str(int type);
+
+    void update_regex_option();
 
 private:
     Ui::func2 *ui;

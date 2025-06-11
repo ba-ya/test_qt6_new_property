@@ -143,12 +143,46 @@ void func2::on_btn_filter_released()
     } else {
         ui->output->setText("false");
     }
+}
 
-    ///ThousandsSeparator
-    // 迭代+替换
-    // 多次匹配+替换
-    QString num = "12345678901";
-    QString formatted = num.replace(regex, "\\1,");
-    qDebug() << formatted;
+
+void func2::on_btn_other_released()
+{
+    {
+        qDebug() << "-----------ThousandsSeparator";
+        // 迭代+替换
+        // 多次匹配+替换
+        QString num = "12345678901";
+        QString formatted = num.replace(regex, "\\1,");
+        qDebug() <<"12345678901" << formatted;
+    }
+
+    {
+        qDebug() << "-----------cpature by <name>";
+        QRegularExpression re("^(?<date>\\d+)/(?<month>\\d+)/(?<year>\\d+)$");
+        QRegularExpressionMatch match = re.match("08/12/1985");
+        if (match.hasMatch()) {
+            QString date = match.captured("date"); // date == "08"
+            QString month = match.captured("month"); // month == "12"
+            QString year = match.captured("year"); // year == 1985
+            qDebug() << "date" << date
+                     << "month" << month
+                     << "year" << year;
+        }
+    }
+
+    {
+        qDebug() << "-----------global match";
+        QRegularExpression re("\\w+");
+        QRegularExpressionMatchIterator i = re.globalMatch("the quick fox");
+        QStringList words;
+        while (i.hasNext()) {
+            auto match = i.next();
+            QString word = match.captured(0);
+            words << word;
+        }
+        qDebug() << words;
+
+    }
 }
 

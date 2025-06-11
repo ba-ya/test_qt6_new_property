@@ -33,6 +33,7 @@ private slots:
     void on_comboBox_type_currentIndexChanged(int index);
     void on_btn_filter_released();
     void on_curr_reg_returnPressed();
+    void on_btn_other_released();
 
 private:
     void init();

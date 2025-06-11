@@ -100,6 +100,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </layout>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="btn_other">
+     <property name="text">
+      <string>其他功能(打印查看)</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

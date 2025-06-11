@@ -12,7 +12,7 @@ timer.elapsed()
 
 #  func2, 正则
 
-## QRegularExpression
+## [QRegularExpression Class | Qt Core | Qt 6.9.0](https://doc.qt.io/qt-6/qregularexpression.html)
 
 ```c++
 QRegularExpression regex;

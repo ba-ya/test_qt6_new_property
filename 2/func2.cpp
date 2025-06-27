@@ -123,6 +123,8 @@ void func2::on_btn_filter_released()
     QString text = ui->input->toPlainText();
     QStringList lines = text.split("\n");
     QStringList matched_lines;
+    auto pre = ui->lineEdit_prefix->text();
+    auto suf = ui->lineEdit_suffix->text();
     for (auto &line : lines) {
         // match返回的是第一次匹配到结果
         QRegularExpressionMatch match = regex.match(line.trimmed());
@@ -135,7 +137,7 @@ void func2::on_btn_filter_released()
             for (int i = 0; i < cnt; ++i) {
                 captured_lines << match.captured(i + 1);
             }
-            ui->out_capture->append("[" + captured_lines.join("] [") +"]");
+            ui->out_capture->append(pre + captured_lines.join(suf + " " + pre) + suf);
         }
     }
     if (!matched_lines.isEmpty()) {

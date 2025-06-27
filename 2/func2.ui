@@ -45,16 +45,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <item row="2" column="3">
        <widget class="QTextEdit" name="out_capture"/>
       </item>
-      <item row="0" column="0" colspan="4">
-       <widget class="QLineEdit" name="curr_reg">
-        <property name="dragEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="2">
        <widget class="QTextEdit" name="output"/>
       </item>
@@ -72,6 +62,46 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <property name="icon">
          <iconset theme="QIcon::ThemeIcon::DocumentSend"/>
         </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QLineEdit" name="curr_reg">
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QWidget" name="widget" native="true">
+        <widget class="QLineEdit" name="lineEdit_prefix">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>113</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="placeholderText">
+          <string>前缀</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_suffix">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>0</y>
+           <width>113</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="placeholderText">
+          <string>后缀</string>
+         </property>
+        </widget>
        </widget>
       </item>
      </layout>

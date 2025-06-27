@@ -25,6 +25,7 @@ set(PROJECT_SOURCES
         2/func2.cpp
         2/func2.h
         2/func2.ui
+        icon.rc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

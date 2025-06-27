@@ -22,29 +22,31 @@ void func2::init()
         names << to_str(i);
     }
     ui->comboBox_type->addItems(names);
-
+    // combox
     connect(ui->checkBox_case_insensi, &QCheckBox::checkStateChanged, this, [this](){
         update_regex_option();
     });
     connect(ui->checkBox_ignore_space, &QCheckBox::checkStateChanged, this, [this](){
         update_regex_option();
     });
+    // lineedit
+    connect(ui->curr_reg, &QLineEdit::returnPressed, this, [this]() {
+        // ui输入字面量即可,不需要考虑转义
+        // ui输入   "^[+-]?[0-9]+(\.[0-9]*)?$"
+        // 控制台打印"^[+-]?[0-9]+(\\.[0-9]*)?$"
+        if (set_reg_pattern(ui->curr_reg->text().trimmed())) {
+            do_filter();
+        }
+    });
+    connect(ui->lineEdit_prefix, &QLineEdit::returnPressed, this, [this]() {
+        do_filter();
+    });
+    connect(ui->lineEdit_suffix, &QLineEdit::returnPressed, this, [this]() {
+        do_filter();
+    });
 
+    // show
     on_comboBox_type_currentIndexChanged(RexTypeCount - 1);
-}
-
-void func2::on_curr_reg_returnPressed()
-{
-    // ui输入字面量即可,不需要考虑转义
-    // ui输入   "^[+-]?[0-9]+(\.[0-9]*)?$"
-    // 控制台打印"^[+-]?[0-9]+(\\.[0-9]*)?$"
-    QRegularExpression re(ui->curr_reg->text().trimmed());
-    if (!re.isValid()) {
-        ui->output->setText("Invalid regex");
-        return;
-    }
-    regex = re;
-    on_btn_filter_released();
 }
 
 void func2::on_comboBox_type_currentIndexChanged(int type)
@@ -76,9 +78,9 @@ void func2::on_comboBox_type_currentIndexChanged(int type)
         /// Qt不能逆序查找
         filter = "(\\d)(?=(\\d{3})+(?!\\d))";
     }
-    regex.setPattern(filter);
-    ui->curr_reg->setText(filter);
-    on_btn_filter_released();
+    if (set_reg_pattern(filter)) {
+        do_filter();
+    }
 }
 
 QString func2::to_str(int type)
@@ -115,7 +117,20 @@ void func2::update_regex_option()
     regex.setPatternOptions(flag);
 }
 
-void func2::on_btn_filter_released()
+bool func2::set_reg_pattern(const QString &filter)
+{
+    auto old = regex.pattern();
+
+    regex.setPattern(filter);
+    if (!regex.isValid()) {
+        regex.setPattern(old);
+        ui->output->setText("Invalid regex");
+        return false;
+    }
+    return true;
+}
+
+void func2::do_filter()
 {
     qDebug() << "pattern" << regex.pattern();
     ui->out_capture->clear();
@@ -147,6 +162,10 @@ void func2::on_btn_filter_released()
     }
 }
 
+void func2::on_btn_filter_released()
+{
+    do_filter();
+}
 
 void func2::on_btn_other_released()
 {
@@ -161,7 +180,7 @@ void func2::on_btn_other_released()
 
     {
         qDebug() << "-----------cpature by <name>";
-        QRegularExpression re("^(?<date>\\d+)/(?<month>\\d+)/(?<year>\\d+)$");
+        static QRegularExpression re("^(?<date>\\d+)/(?<month>\\d+)/(?<year>\\d+)$");
         QRegularExpressionMatch match = re.match("08/12/1985");
         if (match.hasMatch()) {
             QString date = match.captured("date"); // date == "08"
@@ -175,7 +194,7 @@ void func2::on_btn_other_released()
 
     {
         qDebug() << "-----------global match";
-        QRegularExpression re("\\w+");
+        static QRegularExpression re("\\w+");
         QRegularExpressionMatchIterator i = re.globalMatch("the quick fox");
         QStringList words;
         while (i.hasNext()) {

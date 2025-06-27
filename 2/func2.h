@@ -32,7 +32,6 @@ public:
 private slots:
     void on_comboBox_type_currentIndexChanged(int index);
     void on_btn_filter_released();
-    void on_curr_reg_returnPressed();
     void on_btn_other_released();
 
 private:
@@ -40,6 +39,8 @@ private:
     QString to_str(int type);
 
     void update_regex_option();
+    bool set_reg_pattern(const QString &filter);
+    void do_filter();
 
 private:
     Ui::func2 *ui;

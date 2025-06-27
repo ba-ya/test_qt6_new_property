@@ -72,6 +72,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <property name="readOnly">
          <bool>false</bool>
         </property>
+        <property name="placeholderText">
+         <string>正则表达式:不需要\\转义\</string>
+        </property>
        </widget>
       </item>
       <item row="0" column="3">

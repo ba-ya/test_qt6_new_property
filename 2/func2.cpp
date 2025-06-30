@@ -78,6 +78,7 @@ void func2::on_comboBox_type_currentIndexChanged(int type)
         /// Qt不能逆序查找
         filter = "(\\d)(?=(\\d{3})+(?!\\d))";
     }
+    ui->curr_reg->setText(filter);
     if (set_reg_pattern(filter)) {
         do_filter();
     }

@@ -175,6 +175,8 @@ void func2::on_btn_other_released()
         // 迭代+替换
         // 多次匹配+替换
         QString num = "12345678901";
+        // (\d)(?=(\d{3})+(?!\d))
+        // "必须是若干个完整的三位组之后就结束，不能再多出一位数字。"
         QString formatted = num.replace(regex, "\\1,");
         qDebug() <<"12345678901" << formatted;
     }

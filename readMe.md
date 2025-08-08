@@ -1,4 +1,9 @@
-[TOC]
+- [func1, 计算延时](#func1-计算延时)
+- [func2, 正则](#func2-正则)
+  - [QRegularExpression Class | Qt Core | Qt 6.9.0](#qregularexpression-class--qt-core--qt-690)
+  - [捕获列表](#捕获列表)
+- [Qt creater进行替换](#qt-creater进行替换)
+
 
 #  func1, 计算延时
 
@@ -53,3 +58,11 @@ if (match.hasMatch()) {
 
 
 ![image-20250627113756580](readMe.assets/image-20250627113756580.png)
+
+# Qt creater进行替换
+
+()进行捕获
+
+\1 \2来表示是第一个被捕获的
+
+![image-20250808103705267](readMe.assets/image-20250808103705267.png)

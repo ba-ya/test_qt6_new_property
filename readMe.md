@@ -2,6 +2,7 @@
 - [func2, 正则](#func2-正则)
   - [QRegularExpression Class | Qt Core | Qt 6.9.0](#qregularexpression-class--qt-core--qt-690)
   - [捕获列表](#捕获列表)
+  - [全局匹配](#全局匹配)
 - [Qt creater进行替换](#qt-creater进行替换)
 
 
@@ -55,7 +56,23 @@ if (match.hasMatch()) {
         }
 ```
 
+## 全局匹配
 
+```c++
+   {
+        qDebug() << "-----------global match";
+        static QRegularExpression re("\\w+");
+        QRegularExpressionMatchIterator i = re.globalMatch("the quick fox");
+        QStringList words;
+        while (i.hasNext()) {
+            auto match = i.next();
+            QString word = match.captured(0);
+            words << word;
+        }
+        qDebug() << words;
+
+    }
+```
 
 ![image-20250627113756580](readMe.assets/image-20250627113756580.png)
 
@@ -66,3 +83,4 @@ if (match.hasMatch()) {
 \1 \2来表示是第一个被捕获的
 
 ![image-20250808103705267](readMe.assets/image-20250808103705267.png)
+

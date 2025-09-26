@@ -47,6 +47,7 @@ void func2::init()
 
     // show
     on_comboBox_type_currentIndexChanged(RexTypeCount - 1);
+    ui->tabWidget->setCurrentIndex(0);
 }
 
 void func2::on_comboBox_type_currentIndexChanged(int type)
@@ -110,12 +111,14 @@ void func2::update_regex_option()
 {
     QRegularExpression::PatternOptions flag = QRegularExpression::NoPatternOption;
     if (ui->checkBox_case_insensi->isChecked()) {
+        // 忽略大小写匹配
         flag |= QRegularExpression::PatternOption::CaseInsensitiveOption;
     }
     if (ui->checkBox_ignore_space->isChecked()) {
         flag |= QRegularExpression::PatternOption::ExtendedPatternSyntaxOption;
     }
     regex.setPatternOptions(flag);
+    do_filter();
 }
 
 bool func2::set_reg_pattern(const QString &filter)
@@ -170,43 +173,52 @@ void func2::on_btn_filter_released()
 
 void func2::on_btn_other_released()
 {
+    // 12345678901
+    ui->output_debug->setText("");
     {
-        qDebug() << "-----------ThousandsSeparator";
+        ui->output_debug->append("-----------ThousandsSeparator");
         // 迭代+替换
         // 多次匹配+替换
         QString num = "12345678901";
         // (\d)(?=(\d{3})+(?!\d))
         // "必须是若干个完整的三位组之后就结束，不能再多出一位数字。"
-        QString formatted = num.replace(regex, "\\1,");
-        qDebug() <<"12345678901" << formatted;
+        static QRegularExpression re("(\\d)(?=(\\d{3})+(?!\\d))");
+        QString formatted = num.replace(re, "\\1,");
+        ui->output_debug->append(QString("origin text: %1").arg(num));
+        ui->output_debug->append(QString("reg: %1").arg(re.pattern()));
+        ui->output_debug->append(QString("12345678901: %1").arg(formatted));
     }
 
     {
-        qDebug() << "-----------cpature by <name>";
+        ui->output_debug->append("\n-----------cpature by <name>");
         static QRegularExpression re("^(?<date>\\d+)/(?<month>\\d+)/(?<year>\\d+)$");
-        QRegularExpressionMatch match = re.match("08/12/1985");
+        QString origin = "08/12/1985";
+        QRegularExpressionMatch match = re.match(origin);
         if (match.hasMatch()) {
             QString date = match.captured("date"); // date == "08"
             QString month = match.captured("month"); // month == "12"
             QString year = match.captured("year"); // year == 1985
-            qDebug() << "date" << date
-                     << "month" << month
-                     << "year" << year;
+            ui->output_debug->append(QString("origin text: %1").arg(origin));
+            ui->output_debug->append(QString("reg: %1").arg(re.pattern()));
+            ui->output_debug->append(QString("date: %1, month: %2, year: %3")
+                                         .arg(date).arg(month).arg(year));
         }
     }
 
     {
-        qDebug() << "-----------global match";
+        ui->output_debug->append("\n-----------global match");
         static QRegularExpression re("\\w+");
-        QRegularExpressionMatchIterator i = re.globalMatch("the quick fox");
+        QString origin = "the quick fox";
+        QRegularExpressionMatchIterator i = re.globalMatch(origin);
         QStringList words;
         while (i.hasNext()) {
             auto match = i.next();
             QString word = match.captured(0);
             words << word;
         }
-        qDebug() << words;
-
+        ui->output_debug->append(QString("origin text: %1").arg(origin));
+        ui->output_debug->append(QString("reg: %1").arg(re.pattern()));
+        ui->output_debug->append(QString("%1").arg(words.join(",")));
     }
 }
 
